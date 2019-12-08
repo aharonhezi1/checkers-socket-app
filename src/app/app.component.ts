@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'socket-app-ng';
+  onClick() {
+    this.title += 'works!!';
+  }
 }

@@ -1,0 +1,32 @@
+table, th, td {
+  border: 1px solid black !important;
+  background-color: white ;
+  border-collapse: collapse;
+}
+table{
+  height: 800px;
+  width: 800px;
+}
+td{
+  height: 100px;
+  width: 100px;
+}
+.td-bg{
+  background-color: rgb(90, 52, 17) ;
+}
+.dot-red {
+margin: auto;
+  height: 50px;
+  width: 50px;
+  background-color:red;
+  border-radius: 50%;
+
+}
+.dot-black {
+margin: auto;
+  height: 50px;
+  width: 50px;
+  background-color:black;
+  border-radius: 50%;
+
+}

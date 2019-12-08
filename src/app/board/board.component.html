@@ -1,0 +1,16 @@
+<table>
+  <tr  *ngFor="let row of rows,index as iRow">
+    <td  [ngClass]="{'td-bg':(iCol%2===0 && iRow%2!==0)|| (iCol%2===1 && iRow%2!==1)}"
+    *ngFor="let col of columns; index as iCol"
+    (click)="onClickTD(iRow,iCol)">
+      <div  *ngIf="isRedPieceInCell(iRow,iCol)"
+       class="dot-red"></div>
+         <div *ngIf="isBlackPieceInCell(iRow,iCol)"
+           class="dot-black"></div>
+
+    </td>
+  </tr>
+</table>
+
+
+
