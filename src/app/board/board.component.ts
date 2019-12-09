@@ -9,10 +9,11 @@ import { BoardService } from '../board.service';
 export class BoardComponent implements OnInit {
   cellID;
   click = false;
+  isBlackPlayerTurn = false;
   constructor(private boardService: BoardService) { }
   columns = [1, 2, 3, 4, 5, 6, 7, 8];
   rows = this.columns;
-  // isWhitecell = true;
+
   redPiecesPosition = [
     [0, 1], [0, 3], [0, 5], [0, 7],
     [2, 1], [2, 3], [2, 5], [2, 7],
@@ -30,11 +31,6 @@ export class BoardComponent implements OnInit {
   isBlackPieceInCell(row, col) {
     return this.blackPiecesPosition.some(cell => cell[0] === row && cell[1] === col);
   }
-
-
-  trackByFn(index, item) {
-    return index % 2 === 0;
-  }
   isWhiteCell(position: [number, number]) {
     let evenRow = true;
 
@@ -48,11 +44,40 @@ export class BoardComponent implements OnInit {
     }
     return true;
   }
-  isValidMove(position: [number, number]) {
-    if (!this.isWhiteCell(position)) {
+  isCorrectDirectionMove(position: [number, number], isBlackPlayerTurn) {
+    let isDiagonalLine;
+    let isCorrectLine;
+    const directionFactor = isBlackPlayerTurn ? 1 : -1;
+    this.boardService.selectedPiece.subscribe(selectedPiece => {
+      console.log(selectedPiece);
+      if (selectedPiece) {
+        isDiagonalLine = Math.abs(selectedPiece.position[0] - position[0]) === Math.abs(selectedPiece.position[1] - position[1])
+        isCorrectLine = (selectedPiece.position[0] - position[0]) === -directionFactor;
+
+      }
+    });
+    return isDiagonalLine && isCorrectLine;
+  }
+  isEmptyCell(position: [number, number]) {
+    if (this.isBlackPieceInCell(position[0], position[1]) || this.isRedPieceInCell(position[0], position[1])) {
       return false;
     }
     return true;
+  }
+  isValidMove(position: [number, number], isBlackPlayerTurn?) {
+    if (!this.isWhiteCell(position)) {
+      return false;
+    }
+    if (!this.isCorrectDirectionMove(position, isBlackPlayerTurn)) {
+      return false;
+    }
+    if (!this.isEmptyCell(position)) {
+      return false;
+    }
+    return true;
+
+  }
+  switchPiece(row, col) {
 
   }
   onClickTD(row, col) {
@@ -61,43 +86,57 @@ export class BoardComponent implements OnInit {
       if (!selectedPiece && this.click) {
         this.click = false;
         console.log(row, col);
-
-        if (this.isBlackPieceInCell(row, col)) {
-          console.log('black');
-          return this.boardService.selectedPiece.next(
-            { isBlackPiece: true, position: [row, col] });
+        if (this.isBlackPlayerTurn) {
+          if (this.isBlackPieceInCell(row, col)) {
+            console.log('black');
+            this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+            return this.boardService.selectedPiece.next(
+              { isBlackPiece: true, position: [row, col] });
+          }
+        } else {
+          if (this.isRedPieceInCell(row, col)) {
+            console.log('red');
+            this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+            return this.boardService.selectedPiece.next(
+              { isBlackPiece: false, position: [row, col] });
+          }
         }
-
-        if (this.isRedPieceInCell(row, col)) {
-          console.log('red');
-          return this.boardService.selectedPiece.next(
-            { isBlackPiece: false, position: [row, col] });
-        }
-
       } else if (this.click) {
         this.click = false;
-
-        if (!this.isValidMove([row, col])) {
-          return console.log('white');
-        }
         const lastPosition = selectedPiece.position;
-        if (selectedPiece.isBlackPiece) {
-          this.blackPiecesPosition = this.blackPiecesPosition.filter(cell => !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
-          this.blackPiecesPosition.push([row, col]);
-        } else {
-          this.redPiecesPosition = this.redPiecesPosition.filter(cell => !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
-          this.redPiecesPosition.push([row, col]);
-
-        }
         if (!(lastPosition[0] === row && lastPosition[1] === col)) {
+          // switching piece
+          if (!this.isBlackPlayerTurn) {
+            if (this.isBlackPieceInCell(row, col)) {
+              console.log('switch');
+              return this.boardService.selectedPiece.next(
+                { isBlackPiece: true, position: [row, col] });
+            }
+
+          } else {
+            if (this.isRedPieceInCell(row, col)) {
+              console.log('switch');
+              return this.boardService.selectedPiece.next(
+                { isBlackPiece: false, position: [row, col] });
+            }
+          }
+          if (!this.isValidMove([row, col], this.isBlackPlayerTurn)) {
+            return console.log('not vallid move!');
+          }
+          if (selectedPiece.isBlackPiece) {
+            this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
+              !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
+            this.blackPiecesPosition.push([row, col]);
+          } else {
+            this.redPiecesPosition = this.redPiecesPosition.filter(cell =>
+              !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
+            this.redPiecesPosition.push([row, col]);
+          }
           this.boardService.selectedPiece.next(null);
         }
-
       }
     });
-
   }
-
   ngOnInit() {
   }
 

@@ -7,4 +7,6 @@ import { BehaviorSubject } from 'rxjs';
 export class BoardService {
   selectedPiece = new BehaviorSubject<{ isBlackPiece: boolean, position: number[] }>(null);
   constructor() { }
+
+
 }
