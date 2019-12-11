@@ -7,6 +7,7 @@ import { BoardService } from '../board.service';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
+  selectedPiece;
   cellID;
   click = false;
   isBlackPlayerTurn = false;
@@ -48,14 +49,14 @@ export class BoardComponent implements OnInit {
     let isDiagonalLine;
     let isCorrectLine;
     const directionFactor = isBlackPlayerTurn ? 1 : -1;
-    this.boardService.selectedPiece.subscribe(selectedPiece => {
-      console.log(selectedPiece);
-      if (selectedPiece) {
-        isDiagonalLine = Math.abs(selectedPiece.position[0] - position[0]) === Math.abs(selectedPiece.position[1] - position[1])
-        isCorrectLine = (selectedPiece.position[0] - position[0]) === -directionFactor;
+    // this.boardService.selectedPiece.subscribe(selectedPiece => {
+    console.log(this.selectedPiece);
+    if (this.selectedPiece) {
+      isDiagonalLine = Math.abs(this.selectedPiece.position[0] - position[0]) === Math.abs(this.selectedPiece.position[1] - position[1])
+      isCorrectLine = (this.selectedPiece.position[0] - position[0]) === -directionFactor;
 
-      }
-    });
+    }
+    //  });
     return isDiagonalLine && isCorrectLine;
   }
   isEmptyCell(position: [number, number]) {
@@ -82,62 +83,68 @@ export class BoardComponent implements OnInit {
   }
   onClickTD(row, col) {
     this.click = true;
-    this.boardService.selectedPiece.subscribe(selectedPiece => {
-      if (!selectedPiece && this.click) {
-        this.click = false;
-        console.log(row, col);
-        if (this.isBlackPlayerTurn) {
+    // this.boardService.selectedPiece.subscribe(selectedPiece => {
+    if (!this.selectedPiece && this.click) {
+      this.click = false;
+      console.log(row, col);
+      if (this.isBlackPlayerTurn) {
+        if (this.isBlackPieceInCell(row, col)) {
+          console.log('black');
+          this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+          return this.boardService.selectedPiece.next(
+            { isBlackPiece: true, position: [row, col] });
+        }
+      } else {
+        if (this.isRedPieceInCell(row, col)) {
+          console.log('red');
+          this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+          return this.boardService.selectedPiece.next(
+            { isBlackPiece: false, position: [row, col] });
+        }
+      }
+    } else if (this.click) {
+      this.click = false;
+      const lastPosition = this.selectedPiece.position;
+      if (!(lastPosition[0] === row && lastPosition[1] === col)) {
+        // switching piece
+        if (!this.isBlackPlayerTurn) {
           if (this.isBlackPieceInCell(row, col)) {
-            console.log('black');
-            this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+            console.log('switch');
             return this.boardService.selectedPiece.next(
               { isBlackPiece: true, position: [row, col] });
           }
+
         } else {
           if (this.isRedPieceInCell(row, col)) {
-            console.log('red');
-            this.isBlackPlayerTurn = !this.isBlackPlayerTurn;
+            console.log('switch');
             return this.boardService.selectedPiece.next(
               { isBlackPiece: false, position: [row, col] });
           }
         }
-      } else if (this.click) {
-        this.click = false;
-        const lastPosition = selectedPiece.position;
-        if (!(lastPosition[0] === row && lastPosition[1] === col)) {
-          // switching piece
-          if (!this.isBlackPlayerTurn) {
-            if (this.isBlackPieceInCell(row, col)) {
-              console.log('switch');
-              return this.boardService.selectedPiece.next(
-                { isBlackPiece: true, position: [row, col] });
-            }
-
-          } else {
-            if (this.isRedPieceInCell(row, col)) {
-              console.log('switch');
-              return this.boardService.selectedPiece.next(
-                { isBlackPiece: false, position: [row, col] });
-            }
-          }
-          if (!this.isValidMove([row, col], this.isBlackPlayerTurn)) {
-            return console.log('not vallid move!');
-          }
-          if (selectedPiece.isBlackPiece) {
-            this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
-              !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
-            this.blackPiecesPosition.push([row, col]);
-          } else {
-            this.redPiecesPosition = this.redPiecesPosition.filter(cell =>
-              !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
-            this.redPiecesPosition.push([row, col]);
-          }
-          this.boardService.selectedPiece.next(null);
+        if (!this.isValidMove([row, col], this.isBlackPlayerTurn)) {
+          return console.log('not vallid move!');
         }
+        if (this.selectedPiece.isBlackPiece) {
+          this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
+            !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
+          this.blackPiecesPosition.push([row, col]);
+        } else {
+          this.redPiecesPosition = this.redPiecesPosition.filter(cell =>
+            !(cell[0] === lastPosition[0] && cell[1] === lastPosition[1]));
+          this.redPiecesPosition.push([row, col]);
+        }
+        this.boardService.selectedPiece.next(null);
       }
-    });
+
+    }
+
+    // });
   }
   ngOnInit() {
+    this.boardService.selectedPiece.subscribe(selectedPiece =>
+      this.selectedPiece = selectedPiece
+    )
+
   }
 
 }
