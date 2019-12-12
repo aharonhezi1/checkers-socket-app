@@ -6,6 +6,8 @@ table, th, td {
 table{
   height: 800px;
   width: 800px;
+  margin:auto;
+
 }
 td{
   height: 100px;
@@ -28,5 +30,9 @@ margin: auto;
   width: 50px;
   background-color:black;
   border-radius: 50%;
-
+}
+body{
+  background-color:rgb(70, 78, 70) ;
+  height: 1000px ;
+  padding-top: 50px;
 }
