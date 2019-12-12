@@ -10,6 +10,7 @@ import { Socket } from 'ngx-socket-io';
 })
 export class BoardComponent implements OnInit {
   selectedPiece;
+  capturedEnemyPosition;
   nextMove;
   isBlackPlayerTurn = false;
   isBlackPlayer;
@@ -41,14 +42,24 @@ export class BoardComponent implements OnInit {
   isCorrectDirectionMove(position: [number, number], isBlackPlayer) {
     let isDiagonalLine;
     let isCorrectLine;
+    let isCorrectCapturingLine;
+    const positionOfEnemy = [];
     const directionFactor = isBlackPlayer ? 1 : -1;
-    console.log(this.selectedPiece);
-    if (this.selectedPiece) {
-      isDiagonalLine = Math.abs(this.selectedPiece.position[0] - position[0]) === Math.abs(this.selectedPiece.position[1] - position[1]);
-      isCorrectLine = (this.selectedPiece.position[0] - position[0]) === directionFactor;
-
+    let isEnemyinCell;
+    // console.log(this.selectedPiece);
+    // if (this.selectedPiece) {
+    isDiagonalLine = Math.abs(this.selectedPiece.position[0] - position[0]) === Math.abs(this.selectedPiece.position[1] - position[1]);
+    isCorrectLine = (this.selectedPiece.position[0] - position[0]) === directionFactor;
+    isCorrectCapturingLine = (this.selectedPiece.position[0] - position[0]) === directionFactor * 2;
+    positionOfEnemy[0] = this.selectedPiece.position[0] > position[0] ? this.selectedPiece.position[0] - 1 : position[0] - 1
+    positionOfEnemy[1] = this.selectedPiece.position[1] > position[1] ? this.selectedPiece.position[1] - 1 : position[1] - 1
+    isEnemyinCell = isBlackPlayer ? this.isRedPieceInCell(positionOfEnemy[0], positionOfEnemy[1]) :
+      this.isBlackPieceInCell(positionOfEnemy[0], positionOfEnemy[1]);
+    if (isCorrectCapturingLine && isEnemyinCell) {
+      this.capturedEnemyPosition = [positionOfEnemy[0], positionOfEnemy[1]];
+      return true;
     }
-    return isDiagonalLine && isCorrectLine;
+    return (isDiagonalLine && isCorrectLine);
   }
   isEmptyCell(position: [number, number]) {
     if (this.isBlackPieceInCell(position[0], position[1]) || this.isRedPieceInCell(position[0], position[1])) {
@@ -67,6 +78,17 @@ export class BoardComponent implements OnInit {
       return false;
     }
     return true;
+  }
+  killPiece(position: [number, number]) {
+    if (this.isBlackPlayer) {
+      this.redPiecesPosition = this.redPiecesPosition.filter(cell =>
+        !(cell[0] === position[0] && cell[1] === position[1]));
+    } else {
+      this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
+        !(cell[0] === position[0] && cell[1] === position[1]));
+    }
+    this.capturedEnemyPosition=null;
+
   }
 
   onClickBoard(row, col) {
@@ -105,6 +127,9 @@ export class BoardComponent implements OnInit {
         }
         if (!this.isValidMove([row, col], this.isBlackPlayer)) {
           return console.log('not vallid move!');
+        }
+        if(this.capturedEnemyPosition){
+          this.killPiece(this.capturedEnemyPosition);
         }
         if (this.isBlackPlayer && this.selectedPiece.isBlackPiece) {
           this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
