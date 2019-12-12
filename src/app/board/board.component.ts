@@ -11,9 +11,8 @@ import { Socket } from 'ngx-socket-io';
 export class BoardComponent implements OnInit {
   selectedPiece;
   nextMove;
-
   isBlackPlayerTurn = false;
-  isBlackPlayer; // = !this.boardService.player.isFirstPlayer;
+  isBlackPlayer;
   constructor(private boardService: BoardService, private socket: Socket) { }
   columns = [1, 2, 3, 4, 5, 6, 7, 8];
   rows = this.columns;
@@ -29,7 +28,6 @@ export class BoardComponent implements OnInit {
   }
   isWhiteCell(position: [number, number]) {
     let evenRow = true;
-
     for (let i = 0; i < this.rows.length; i++) {
       for (let j = evenRow ? 0 : 1; j < this.columns.length; j += 2) {
         if (position[0] === i && position[1] === j) {
@@ -44,14 +42,12 @@ export class BoardComponent implements OnInit {
     let isDiagonalLine;
     let isCorrectLine;
     const directionFactor = isBlackPlayer ? 1 : -1;
-    // this.boardService.selectedPiece.subscribe(selectedPiece => {
     console.log(this.selectedPiece);
     if (this.selectedPiece) {
       isDiagonalLine = Math.abs(this.selectedPiece.position[0] - position[0]) === Math.abs(this.selectedPiece.position[1] - position[1]);
       isCorrectLine = (this.selectedPiece.position[0] - position[0]) === directionFactor;
 
     }
-    //  });
     return isDiagonalLine && isCorrectLine;
   }
   isEmptyCell(position: [number, number]) {
@@ -72,19 +68,13 @@ export class BoardComponent implements OnInit {
     }
     return true;
   }
-  switchPiece(row, col) {
 
-  }
   onClickBoard(row, col) {
-
-    // this.boardService.selectedPiece.subscribe(selectedPiece => {
-    if (!this.selectedPiece ) {
-
+    if (!this.selectedPiece) {
       console.log(row, col);
       if (this.isBlackPlayerTurn && this.isBlackPlayer) {
         if (this.isBlackPieceInCell(row, col)) {
           console.log('black');
-          //  this.isBlackPlayerTurn = !this.isBlackPlayerTurn;  // remove!
           return this.boardService.selectedPiece.next(
             { isBlackPiece: true, position: [row, col] });
         }
@@ -92,13 +82,11 @@ export class BoardComponent implements OnInit {
       if (!this.isBlackPlayerTurn && !this.isBlackPlayer) {
         if (this.isRedPieceInCell(row, col)) {
           console.log('red');
-          // this.isBlackPlayerTurn = !this.isBlackPlayerTurn; // remove!
           return this.boardService.selectedPiece.next(
             { isBlackPiece: false, position: [row, col] });
         }
       }
-    } else  {
-
+    } else {
       const lastPosition = this.selectedPiece.position;
       if (!(lastPosition[0] === row && lastPosition[1] === col)) {
         // switching piece
@@ -108,7 +96,6 @@ export class BoardComponent implements OnInit {
             return this.boardService.selectedPiece.next(
               { isBlackPiece: true, position: [row, col] });
           }
-
         } else {
           if (!this.isBlackPlayer && this.isRedPieceInCell(row, col)) {
             console.log('switch');
@@ -145,8 +132,6 @@ export class BoardComponent implements OnInit {
       }
       // socket
       this.boardService.postBoard(this.nextMove);
-      // this.boardService.setBoard();
-
     }
   }
   ngOnInit() {
@@ -161,12 +146,6 @@ export class BoardComponent implements OnInit {
       this.isBlackPlayer = isBlackPlayer);
     this.boardService.isBlackPlayerTurn.subscribe(isBlackPlayerTurn =>
       this.isBlackPlayerTurn = isBlackPlayerTurn);
-    // this.socket.fromEvent<any>('setBoard').subscribe((res: any) => {
-    //   console.log('setBoard', res);
-    //   this.boardService. redPiecesOnBoard.next(res.redPiecesPosition);
-    //   this.boardService.blackPiecesOnBoard.next(res.blackPiecesPosition);
-    //   this.boardService.isBlackPlayerTurn.next(res.isBlackPlayerTurn);
-    // });
     this.socket.on('setBoard', (res) => {
       console.log('setBoard', res);
       this.boardService.redPiecesOnBoard.next(res.redPiecesPosition);
