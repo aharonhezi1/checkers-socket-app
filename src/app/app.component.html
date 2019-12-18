@@ -1,14 +1,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <div class="row">
-  <div class="col-xl-2">
+  <div class="col-xl-1">
 <app-sidenav></app-sidenav>
   </div>
-  <div class="col-xl-8">
+  <div class="col-xl-7">
     <app-board></app-board>
 
   </div>
-  <div class="col-xl-2">
+  <div *ngIf="isLogin" class="col-xl-4">
 <app-users></app-users>
   </div>
+  <div *ngIf="!isLogin"  class="col-xl-4">
+    <app-login ></app-login>
+      </div>
 </div>

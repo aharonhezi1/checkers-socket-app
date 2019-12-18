@@ -1,10 +1,18 @@
+<h3>please choose a player!</h3>
 <table>
-  <tr>
-    <th> USERS</th>
-  </tr>
-  <!-- <tr *ngFor="let col of columns; index as i">
-    <td> User {{i}} </td>
-    </tr> -->
 
-  </table>
+  <!-- <tr>
+    <th> </th>
+  </tr> -->
+  <tr *ngFor="let user of users; index as i">
+    <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}" (click)="onClickUser(user)">
+      <h4>{{user.name }}</h4>
+    </td>
+    <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}">{{user.numberOfGames }}</td>
+    <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}">{{user.numberOfVictories}}</td>
+    <!-- <td style="padding: 0%;"><button>request a match</button></td> -->
+
+  </tr>
+
+</table>
 <button (click)="onJoin()">join</button>

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { BoardService } from '../board.service';
+import { UsersApiService } from './users-api.service';
+import { error } from 'util';
+import { LoginService } from '../login/login.service';
 
 
 @Component({
@@ -10,9 +13,17 @@ import { BoardService } from '../board.service';
 })
 export class UsersComponent implements OnInit {
   user = { name: 'Jd' };
+  users = [];
+  isUserClicked = false;
+  constructor(private socket: Socket,
+    private boardService: BoardService,
+    private usersApiService: UsersApiService,
+    private loginService: LoginService) { }
 
-  constructor(private socket: Socket, private boardService: BoardService) { }
-  columns = [, , , , , , , 1];
+  onClickUser(user) {
+    console.log(user);
+    this.isUserClicked = !this.isUserClicked;
+  }
   onJoin() {
     this.socket.emit('start game', {
       user: this.user,
@@ -26,8 +37,17 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.socket.fromEvent<any>('hello').subscribe(socket =>
+    // this.socket.fromEvent<any>('loginUsers').subscribe( users => {
+    //   console.log('loginUsers', users)
+    //   this.users = users;
+    //   this.loginService.isLogin.next(true);
 
+    // });
+    this.loginService.users.subscribe(users => {
+      this.users = users;
+    });
+
+    this.socket.fromEvent<any>('hello').subscribe(socket =>
       console.log(socket));
 
   }
