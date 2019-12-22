@@ -6,7 +6,7 @@
   </tr> -->
   <tr *ngFor="let user of users; index as i">
     <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}" (click)="onClickUser(user)">
-      <h4>{{user.name }}</h4>
+      <span>{{user.isAvailable?"  available":"  unavailable"}}</span>  <h4 [ngStyle]="{'color':user.isAvailable?'green':'red'}">{{user.name }}</h4>
     </td>
     <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}">{{user.numberOfGames }}</td>
     <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}">{{user.numberOfVictories}}</td>
@@ -15,4 +15,10 @@
   </tr>
 
 </table>
-<button (click)="onJoin()">join</button>
+
+<app-challenge-modal [player]="player"></app-challenge-modal>
+
+<span #openChallengeModal  data-toggle="modal" data-target="#challengeModal">
+
+</span>
+

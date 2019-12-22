@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 export class BoardService {
   constructor(private socket: Socket) { }
   room;
+  isAvailable=new Subject<boolean>();
 
   redPiecesPosition = [
     [0, 1], [0, 3], [0, 5], [0, 7],
@@ -42,7 +43,9 @@ export class BoardService {
       this.isBlackPlayerTurn.next(res.isBlackPlayerTurn);
       this.isBlackPlayer.next(!res.isFirstPlayer);
     });
+
   }
+
   // }
   postBoard(nextMove) {
     this.socket.emit('postBoard', { ...nextMove, room: this.room });

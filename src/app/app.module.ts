@@ -8,6 +8,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChallengeModalComponent } from './challenge-modal/challenge-modal.component';
+import { RefuseModalComponent } from './refuse-modal/refuse-modal.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3030', options: {} };
 
@@ -18,7 +20,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3030', options: {} };
     BoardComponent,
     UsersComponent,
     SidenavComponent,
-    LoginComponent
+    LoginComponent,
+    ChallengeModalComponent,
+    RefuseModalComponent
   ],
   imports: [
     BrowserModule,

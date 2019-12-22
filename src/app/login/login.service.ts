@@ -8,6 +8,8 @@ import { Socket } from 'ngx-socket-io';
   providedIn: 'root'
 })
 export class LoginService {
+  myProfile=new BehaviorSubject<any>(null);
+
   url = 'http://localhost:3030';
 //  users = new BehaviorSubject<any>(null);
   errorMessage;
@@ -16,12 +18,7 @@ export class LoginService {
   isLogin = new BehaviorSubject<boolean>(false);
   constructor(private http: HttpClient, private socket: Socket) { }
   loginUser(user) {
-    // return this.http.post(this.url + '/api/users/login', user).subscribe(res => {
-    //   this.users.next(res);
-    //   this.isLogin.next(true)
-    // }, error =>
-    //   this.errorMessage = 'Unauthorized user!'
-    // );
+
     this.socket.emit('login',user)
 
   }

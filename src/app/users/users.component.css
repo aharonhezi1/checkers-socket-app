@@ -2,6 +2,9 @@ table, th, td {
   border: 1px solid black !important;
   background-color: white ;
   border-collapse: collapse;
+
+}
+th,td{
   text-align: center;
   padding-top: 1px;
   padding-right: 5vw;

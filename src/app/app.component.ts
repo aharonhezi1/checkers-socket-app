@@ -11,6 +11,7 @@ export class AppComponent implements OnInit, OnDestroy {
   sub;
   constructor(private loginService: LoginService) { }
   ngOnInit() {
+
     this.sub = this.loginService.isLogin.subscribe(islogin =>
       this.isLogin = islogin);
   }

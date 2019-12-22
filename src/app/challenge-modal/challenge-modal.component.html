@@ -1,0 +1,23 @@
+
+
+<!-- Modal -->
+<div class="modal fade" id="challengeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="challengeModalLabel">You are challenge to chechers match!</h5>
+        <button (click)="onRrefuse()"  type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <span #closeModalChallenge data-dismiss="modal"></span>
+      <div class="modal-body">
+        The challenger is {{player.reqUserName}} ,with {{player.reqUsernumberOfVictories}} wins from {{player.reqUsernumberOfGames}} matches
+      </div>
+      <div class="modal-footer">
+        <button (click)="onRrefuse()"  type="button" class="btn btn-secondary" data-dismiss="modal">Refuse</button>
+        <button (click)="onEccept()" type="button" class="btn btn-primary">accept challenge</button>
+      </div>
+    </div>
+  </div>
+</div>

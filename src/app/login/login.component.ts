@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { LoginService } from './login.service';
 import { BehaviorSubject } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
+import { BoardService } from '../board.service';
 
 
 @Component({
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   isSign: boolean;
   errorMessage;
 
-  constructor(private loginService: LoginService, private socket: Socket) { }
+
+  constructor(private loginService: LoginService, private socket: Socket,private boardService:BoardService) { }
   onSubmit(form: NgForm) {
     this.errorMessage = '';
     if (this.isSign) {
@@ -35,16 +37,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.sub = this.loginService.isLogin.subscribe(islogin =>
       this.isLogin = islogin);
     this.socket.on('loginUsers', users => {
-     // console.log('loginUsers', users)
+
       if (this.isLogin) {
         this.loginService.users.next(users);
       }
     });
-    this.socket.fromEvent<any>('auth').subscribe(auth => {
-      if (!auth.error) {
-        this.loginService.isLogin.next(true)
+    this.socket.fromEvent<any>('auth').subscribe(user => {
+      if (!user.error) {
+        this.loginService.isLogin.next(true);
+        this.loginService.myProfile.next(user);
       } else {
-        console.log(auth.error);
+
+        console.log(user.error);
       }
     }
     )

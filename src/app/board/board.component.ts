@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { BoardService } from '../board.service';
 import { Socket } from 'ngx-socket-io';
 
@@ -8,12 +8,16 @@ import { Socket } from 'ngx-socket-io';
   styleUrls: ['./board.component.css']
 
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, AfterViewInit {
+  @ViewChild('openRefuseModal', { static: false }) openRefuseModal: ElementRef;
+
   selectedPiece;
   capturedEnemyPosition;
   nextMove;
   isBlackPlayerTurn = false;
   isBlackPlayer;
+  refuseMessage;
+  isAccept;
   constructor(private boardService: BoardService, private socket: Socket) { }
   columns = [1, 2, 3, 4, 5, 6, 7, 8];
   rows = this.columns;
@@ -87,7 +91,7 @@ export class BoardComponent implements OnInit {
       this.blackPiecesPosition = this.blackPiecesPosition.filter(cell =>
         !(cell[0] === position[0] && cell[1] === position[1]));
     }
-    this.capturedEnemyPosition=null;
+    this.capturedEnemyPosition = null;
 
   }
 
@@ -128,7 +132,7 @@ export class BoardComponent implements OnInit {
         if (!this.isValidMove([row, col], this.isBlackPlayer)) {
           return console.log('not vallid move!');
         }
-        if(this.capturedEnemyPosition){
+        if (this.capturedEnemyPosition) {
           this.killPiece(this.capturedEnemyPosition);
         }
         if (this.isBlackPlayer && this.selectedPiece.isBlackPiece) {
@@ -177,6 +181,20 @@ export class BoardComponent implements OnInit {
       this.boardService.blackPiecesOnBoard.next(res.blackPiecesPosition);
       this.boardService.isBlackPlayerTurn.next(res.isBlackPlayerTurn);
     });
-  }
 
+  }
+  ngAfterViewInit() {
+    this.socket.fromEvent<any>('answer').subscribe(reply => {
+      if (reply.reply) {
+        this.socket.emit('startGame',reply.room)
+        this.boardService.isAvailable.next(false);
+
+        this.isAccept=true
+      } else if(!this.isAccept) {
+        this.refuseMessage = reply.challengedUserName + "refused the match!";
+        this.openRefuseModal.nativeElement.click()
+      }
+
+    })
+  }
 }
