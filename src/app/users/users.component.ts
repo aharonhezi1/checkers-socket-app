@@ -31,7 +31,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
     private usersApiService: UsersApiService,
     private loginService: LoginService) { }
 
+onDisconnect(){
+  localStorage.removeItem('login')
+  this.loginService.isLogin.next(false)
+  this.socket.disconnect()
 
+}
   onClickUser(user) {
     console.log();
 
