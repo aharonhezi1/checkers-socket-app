@@ -1,9 +1,9 @@
 <h3>please choose a player!</h3>
 <table>
 
-  <!-- <tr>
-    <th> </th>
-  </tr> -->
+  <tr>
+    <th *ngFor="let col of columnHeaders"> {{col}}</th>
+  </tr>
   <tr *ngFor="let user of users; index as i">
     <td [ngStyle]="{'background-color': i%2!==1?'gray':'white'}" (click)="onClickUser(user)">
       <span>{{user.isAvailable?"  available":"  unavailable"}}</span>  <h4 [ngStyle]="{'color':user.isAvailable?'green':'red'}">{{user.name }}</h4>

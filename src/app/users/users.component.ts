@@ -12,10 +12,12 @@ import { LoginService } from '../login/login.service';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterViewInit {
+  columnHeaders = ['Name', 'Number of games', 'Number of winnings'];
+
   player = {
     reqUserName: '',
     reqUsernumberOfGames: '',
-    reqUsernumberOfVictories: '',
+    reqUsernumberOfVictories: ''
   };
   isAvailable = true;
   myProfile;
@@ -32,11 +34,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   onClickUser(user) {
     console.log();
-    const id = this.myProfile.id;
-    const userId = user.id;
+
     console.log(this.myProfile.user);
 
-    if (this.myProfile.user.id !== user.id && this.boardService.isAvailable) {
+    if (this.myProfile.user.id !== user.id && this.isAvailable) {
       this.socket.emit('requestMatch', {
         reqUserName: this.myProfile.user.name,
         reqUserId: this.myProfile.user.id,
@@ -57,18 +58,22 @@ export class UsersComponent implements OnInit, AfterViewInit {
     });
     this.loginService.users.subscribe(users => {
       this.users = users;
+
     });
-    this.loginService.myProfile.subscribe(myProfile =>
-      this.myProfile = myProfile);
+    this.loginService.myProfile.subscribe(myProfile => {
+      this.myProfile = myProfile;
+      this.isAvailable = myProfile.user.isAvailable;
+
+    });
     this.socket.fromEvent<any>('hello').subscribe(socket =>
       console.log(socket));
 
   }
   ngAfterViewInit() {
     this.socket.fromEvent<any>('requestMatchToUser').subscribe(player => {
-      if (this.boardService.isAvailable){
-      this.player = { ...player, challengedUserName: this.myProfile.user.name };
-      this.openChallengeModal.nativeElement.click();
+      if (this.isAvailable) {
+        this.player = { ...player, challengedUserName: this.myProfile.user.name };
+        this.openChallengeModal.nativeElement.click();
       }
     });
     // this.challengeModal.on("hidden.bs.modal", () => {

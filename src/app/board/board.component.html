@@ -1,5 +1,7 @@
 
-<body><table>
+<body>
+  <h2 *ngIf="myName">Hello {{myName}}</h2>
+  <table>
   <tr  *ngFor="let row of rows,index as iRow">
     <td  [ngClass]="{'td-bg':(iCol%2===0 && iRow%2!==0)|| (iCol%2===1 && iRow%2!==1)}"
     *ngFor="let col of columns; index as iCol"
@@ -12,6 +14,7 @@
     </td>
   </tr>
 </table>
+<button (click)="onQuit()" class="btn btn-danger"><span id="quit">Quit</span></button>
 <app-refuse-modal [refuseMessage]="refuseMessage" ></app-refuse-modal>
 <span #openRefuseModal  data-toggle="modal" data-target="#refusengeModal">
 

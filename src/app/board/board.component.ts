@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { BoardService } from '../board.service';
 import { Socket } from 'ngx-socket-io';
+import { LoginService } from '../login/login.service';
+import { UsersApiService } from '../users/users-api.service';
 
 @Component({
   selector: 'app-board',
@@ -18,13 +20,31 @@ export class BoardComponent implements OnInit, AfterViewInit {
   isBlackPlayer;
   refuseMessage;
   isAccept;
-  constructor(private boardService: BoardService, private socket: Socket) { }
+  myId;
+  myName;
+  isAvailable;
+  constructor(private boardService: BoardService, private socket: Socket, private loginService: LoginService, private usersApiService: UsersApiService) { }
   columns = [1, 2, 3, 4, 5, 6, 7, 8];
   rows = this.columns;
 
   redPiecesPosition = [];
 
   blackPiecesPosition = [];
+  onQuit() {
+    if (!this.isAvailable&& this.myName) {
+      this.redPiecesPosition = [];
+      this.blackPiecesPosition = [];
+      const reply = {
+        reply: false,
+        quit: true,
+        room: this.boardService.room,
+        challengedUserId: this.myId,
+        challengedUserName: this.myName
+      };
+      this.socket.emit('reply', reply);
+
+    }
+  }
   isRedPieceInCell(row, col) {
     return this.redPiecesPosition && this.redPiecesPosition.some(cell => cell[0] === row && cell[1] === col);
   }
@@ -164,6 +184,16 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
   }
   ngOnInit() {
+    this.loginService.myProfile.subscribe(profile => {
+      console.log(profile);
+      if (profile) {
+        this.myId = profile.user.id;
+        this.myName = profile.user.name;
+        this.isAvailable = profile.user.isAvailable;
+
+      }
+
+    })
     this.boardService.selectedPiece.subscribe(selectedPiece =>
       this.selectedPiece = selectedPiece);
     this.boardService.blackPiecesOnBoard.subscribe(positions =>
@@ -186,15 +216,19 @@ export class BoardComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.socket.fromEvent<any>('answer').subscribe(reply => {
       if (reply.reply) {
-        this.socket.emit('startGame',reply.room)
+        this.socket.emit('startGame', reply.room)
         this.boardService.isAvailable.next(false);
+        this.usersApiService.incrementNumOfGamesAndWins(true, false).subscribe()
 
-        this.isAccept=true
-      } else if(!this.isAccept) {
-        this.refuseMessage = reply.challengedUserName + "refused the match!";
-        this.openRefuseModal.nativeElement.click()
+        this.isAccept = true;
+      } else if (!this.isAccept || reply.quit) {
+        if (reply.quit) {
+          this.usersApiService.incrementNumOfGamesAndWins(false, true).subscribe()
+        }
+        this.refuseMessage = reply.challengedUserName + " refused the match!";
+        this.openRefuseModal.nativeElement.click();
       }
 
-    })
+    });
   }
 }

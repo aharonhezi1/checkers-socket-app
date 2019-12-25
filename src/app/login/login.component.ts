@@ -16,9 +16,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   sub;
   isSign: boolean;
   errorMessage;
+  myId;
 
 
-  constructor(private loginService: LoginService, private socket: Socket,private boardService:BoardService) { }
+  constructor(private loginService: LoginService, private socket: Socket, private boardService: BoardService) { }
   onSubmit(form: NgForm) {
     this.errorMessage = '';
     if (this.isSign) {
@@ -40,12 +41,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       if (this.isLogin) {
         this.loginService.users.next(users);
+        users.forEach(user => {
+          if(user.id===this.myId){
+            this.boardService.isAvailable.next(user.isAvailable)
+          }
+        });
       }
     });
     this.socket.fromEvent<any>('auth').subscribe(user => {
       if (!user.error) {
+        console.log(user);
+
         this.loginService.isLogin.next(true);
         this.loginService.myProfile.next(user);
+        this.myId = user.user.id
       } else {
 
         console.log(user.error);

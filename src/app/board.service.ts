@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 export class BoardService {
   constructor(private socket: Socket) { }
   room;
+
   isAvailable=new Subject<boolean>();
 
   redPiecesPosition = [
