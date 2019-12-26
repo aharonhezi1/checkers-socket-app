@@ -34,7 +34,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
 onDisconnect(){
   localStorage.removeItem('login')
   this.loginService.isLogin.next(false)
+  this.boardService.disconnectSubject.next(true)
   this.socket.disconnect()
+  this.loginService.myProfile.next(null)
 
 }
   onClickUser(user) {

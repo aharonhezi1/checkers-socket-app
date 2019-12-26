@@ -32,7 +32,6 @@ export class AppComponent implements OnInit, OnDestroy {
         console.log(profile);
 
         const token = profile.user.token;
-        localStorage.removeItem(this.login)
 
         localStorage.setItem(this.login, token);
       }

@@ -23,6 +23,9 @@ td {
   width: 50px;
   background-color: red;
   border-radius: 50%;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
 }
 .dot-black {
   margin: auto;
@@ -30,6 +33,37 @@ td {
   width: 50px;
   background-color: black;
   border-radius: 50%;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+}
+.king-red{
+  margin: auto;
+    width: 55px;
+    height: 55px;
+    -moz-border-radius: 100%;
+    -webkit-border-radius: 100%;
+    border-radius: 100%;
+    background: red;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+     border: 10px solid gold;
+    z-index: 1;
+}
+.king-black{
+  margin: auto;
+  width: 55px;
+  height: 55px;
+  -moz-border-radius: 100%;
+  -webkit-border-radius: 100%;
+  border-radius: 100%;
+  background: black;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(0,0,0,.5);
+   border: 10px solid gold;
+  z-index: 1;
 }
 body {
   background-color: rgb(70, 78, 70);
@@ -45,7 +79,7 @@ button{
   margin-bottom: -10vh ;
 }
 h2{
-  margin-top: -3vh;
+  margin-top: -5vh;
   position:absolute;
   margin-left: 1vw;
 }

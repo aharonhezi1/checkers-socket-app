@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 export class BoardService {
   constructor(private socket: Socket) { }
   room;
+  disconnectSubject=new BehaviorSubject<boolean>(false);
 
   isAvailable=new Subject<boolean>();
 
@@ -25,7 +26,7 @@ export class BoardService {
   isBlackPlayerTurn = new BehaviorSubject<boolean>(false);
   redPiecesOnBoard = new BehaviorSubject<number[][]>([]);
   blackPiecesOnBoard = new BehaviorSubject<number[][]>([]);
-  selectedPiece = new BehaviorSubject<{ isBlackPiece: boolean, position: number[] }>(null);
+  selectedPiece = new BehaviorSubject<{ isBlackPiece: boolean, position: number[],isKing?:boolean }>(null);
   isBlackPlayer = new Subject<boolean>();
   // setBoard() {
   setBoard = this.socket.fromEvent<any>('setBoard').subscribe((res: any) => {
