@@ -13,13 +13,12 @@
          <div *ngIf="isBlackPieceInCell(iRow,iCol)"
          [ngClass]="(isBlackKingInCell(iRow,iCol))?'king-black':'dot-black'"
           ></div>
-           <!-- <div *ngIf="isRedKingInCell(iRow,iCol)" class="king-red"></div>
-           <div *ngIf="isBlackKingInCell(iRow,iCol)" class="king-black"></div> -->
-
     </td>
   </tr>
 </table>
 <button (click)="onQuit()" class="btn btn-danger"><span id="quit">Quit</span></button>
+<div *ngIf="isGameOver" [ngClass]="(isWinner)?'alert alert-success':'alert alert-danger'"
+>{{isWinner?'You are the winner!':'better luck next time!'}}</div>
 <app-refuse-modal [refuseMessage]="refuseMessage" ></app-refuse-modal>
 <span #openRefuseModal  data-toggle="modal" data-target="#refusengeModal">
 

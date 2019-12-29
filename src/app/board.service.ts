@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 export class BoardService {
   constructor(private socket: Socket) { }
   room;
+  rivalPlayer='';
   disconnectSubject=new BehaviorSubject<boolean>(false);
 
   isAvailable=new Subject<boolean>();

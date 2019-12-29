@@ -31,14 +31,14 @@ export class UsersComponent implements OnInit, AfterViewInit {
     private usersApiService: UsersApiService,
     private loginService: LoginService) { }
 
-onDisconnect(){
-  localStorage.removeItem('login')
-  this.loginService.isLogin.next(false)
-  this.boardService.disconnectSubject.next(true)
-  this.socket.disconnect()
-  this.loginService.myProfile.next(null)
+  onDisconnect() {
+    localStorage.removeItem('login')
+    this.loginService.isLogin.next(false)
+    this.boardService.disconnectSubject.next(true)
+    this.socket.disconnect()
+    this.loginService.myProfile.next(null)
 
-}
+  }
   onClickUser(user) {
     console.log();
 
@@ -53,6 +53,7 @@ onDisconnect(){
         challengedUserName: user.name,
         challengedUserId: user.id
       });
+      this.boardService.rivalPlayer = user.name;
     }
     this.isUserClicked = !this.isUserClicked;
   }
@@ -79,6 +80,7 @@ onDisconnect(){
   ngAfterViewInit() {
     this.socket.fromEvent<any>('requestMatchToUser').subscribe(player => {
       if (this.isAvailable) {
+        this.boardService.rivalPlayer = player.reqUserName;
         this.player = { ...player, challengedUserName: this.myProfile.user.name };
         this.openChallengeModal.nativeElement.click();
       }

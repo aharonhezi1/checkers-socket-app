@@ -22,9 +22,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
   isAccept;
   myId;
   myName;
-  isAvailable;
-  winnerMessage;
-  isWinner
+  isAvailable = true;
+  isGameOver;
+  isWinner;
+
   constructor(private boardService: BoardService, private socket: Socket, private loginService: LoginService, private usersApiService: UsersApiService) { }
   columns = [1, 2, 3, 4, 5, 6, 7, 8];
   rows = this.columns;
@@ -35,8 +36,19 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
 
   blackPiecesPosition = [];
-  onWinner(){
-
+  gameOver() {
+    if (!this.isAvailable) {
+      if (!this.redPiecesPosition.length) {
+        this.isWinner = this.isBlackPlayer;
+      }
+      if (!this.blackPiecesPosition.length) {
+        this.isWinner = !this.isBlackPlayer;
+      }
+    }
+    if (this.isWinner) {
+      this.usersApiService.incrementNumOfGamesAndWins(false, true).subscribe();
+    }
+    this.isGameOver = !this.blackPiecesPosition.length || !this.redPiecesPosition.length;
   }
   onQuit() {
     console.log('onQuit');
@@ -201,7 +213,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     });
 
-     this.capturedEnemyPosition = [];
+    this.capturedEnemyPosition = [];
   }
   movePiece(lastPosition: [number, number], newPosition) {
     if (this.isBlackPlayer && this.selectedPiece.isBlackPiece) {
@@ -273,8 +285,12 @@ export class BoardComponent implements OnInit, AfterViewInit {
           redKingsPosition: this.redKingsPosition,
           blackKingsPosition: this.blackKingsPosition
         };
-        this.boardService.postBoard(this.nextMove);
+        if (!this.isGameOver) {
+          this.boardService.postBoard(this.nextMove);
+        }
       }
+      this.gameOver();
+
     }
 
   }
@@ -314,6 +330,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
       this.boardService.isBlackPlayerTurn.next(res.isBlackPlayerTurn);
       this.redKingsPosition = res.redKingsPosition;
       this.blackKingsPosition = res.blackKingsPosition;
+      this.gameOver()
     });
 
   }
