@@ -14,7 +14,7 @@ export class LoginService {
   url = environment.apiUrl+':'+environment.port
  // url='http://localhost:3030';
   //  users = new BehaviorSubject<any>(null);
-  errorMessage;
+  errorMessage=new  BehaviorSubject<string>('');
   users = new BehaviorSubject<any>(null);
 
   isLogin = new BehaviorSubject<boolean>(false);

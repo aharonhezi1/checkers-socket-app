@@ -37,6 +37,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.boardService.disconnectSubject.next(true)
     this.socket.disconnect()
     this.loginService.myProfile.next(null)
+    window.location.reload();
 
   }
   onClickUser(user) {

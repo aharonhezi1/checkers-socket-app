@@ -4,6 +4,7 @@ import { LoginService } from './login.service';
 import { BehaviorSubject } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
 import { BoardService } from '../board.service';
+import { error } from 'util';
 
 
 @Component({
@@ -17,6 +18,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   isSign: boolean;
   errorMessage;
   myId;
+  message;
+  isLoading;
 
 
   constructor(private loginService: LoginService, private socket: Socket, private boardService: BoardService) { }
@@ -24,14 +27,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     if (this.isSign) {
       this.loginService.loginUser(form.value);
-      this.errorMessage = this.loginService.errorMessage;
+
     } else {
-      this.loginService.signUpUser(form.value).subscribe();
+      this.loginService.signUpUser(form.value).subscribe(res=>{
+        this.message='You can now login!'
+      },error=>{
+      this.isLoading=true
+        this.errorMessage='Sgin up failed!'
+      });
+      this.isLoading=false
     }
   }
   onSwitchLogin() {
     // this.loginService.isLogin.next(!this.isLogin);
     this.isSign = !this.isSign;
+    this.errorMessage='';
   }
 
   ngOnInit() {
@@ -58,11 +68,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginService.myProfile.next(user);
         this.myId = user.user.id
       } else {
-
+        this.loginService.errorMessage.next(user.error)
         console.log(user.error);
       }
     }
-    )
+    );
+    this.loginService.errorMessage.subscribe(errorMessage=>
+      this.errorMessage=errorMessage)
 
   }
   ngOnDestroy() {

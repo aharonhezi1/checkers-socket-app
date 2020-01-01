@@ -29,9 +29,11 @@
     </form>
     <!-- </div> -->
   </div>
+  <hr>
   <div class="row">
     <div class="col-xs-12">
     <div   *ngIf="errorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+    <div *ngIf="message" class="alert alert-success"> {{message}}</div>
     </div>
     </div>
 
