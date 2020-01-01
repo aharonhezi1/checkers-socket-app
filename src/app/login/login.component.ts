@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log(this.socket);
+
     this.sub = this.loginService.isLogin.subscribe(islogin =>
       this.isLogin = islogin);
     this.socket.on('loginUsers', users => {

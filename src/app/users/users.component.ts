@@ -70,7 +70,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     });
     this.loginService.myProfile.subscribe(myProfile => {
       this.myProfile = myProfile;
-      this.isAvailable = myProfile.user.isAvailable;
+      this.isAvailable = myProfile ? myProfile.user.isAvailable : undefined;
 
     });
     this.socket.fromEvent<any>('hello').subscribe(socket =>

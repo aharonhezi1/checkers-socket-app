@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import 'rxjs/add/operator/takeUntil';
 import { map, tap, takeUntil } from 'rxjs/operators';
 import { Socket } from 'ngx-socket-io';
+import { environment } from './../environments/environment';
 
 
 
@@ -25,6 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    console.log(environment);
+
 
     this.loginService.myProfile.takeUntil(this.destroy$).subscribe(profile => {
       this.myProfile = profile;

@@ -10,8 +10,16 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChallengeModalComponent } from './challenge-modal/challenge-modal.component';
 import { RefuseModalComponent } from './refuse-modal/refuse-modal.component';
+import { EnvServiceProvider } from './env.service.provider';
+import { EnvService } from './env.service';
+import { environment } from './../environments/environment';
 
-const config: SocketIoConfig = { url: 'http://localhost:3030', options: {} };
+
+// const env = new EnvService();
+// const config: SocketIoConfig = { url: env.apiUrl + ":" + env.port, options: {} };
+// const config: SocketIoConfig = { url: 'ec2-34-227-148-24.compute-1.amazonaws.com:3030', options: {} };
+
+const config: SocketIoConfig = { url: environment.apiUrl + ':' + environment.port, options: {} };
 
 
 @NgModule({
@@ -31,7 +39,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3030', options: {} };
     SocketIoModule.forRoot(config)
 
   ],
-  providers: [],
+  providers: [EnvServiceProvider],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }
